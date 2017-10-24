@@ -14,8 +14,8 @@ func Test_NoPath(t *testing.T) {
 	params := Params{
 		FilePath: "",
 		SheetNum: 0,
-		Columns:  "",
 		Table:    "",
+		Columns:  "",
 	}
 	code, err := Run(params)
 	if code != 0 && err != nil {
@@ -29,8 +29,8 @@ func Test_OkPath(t *testing.T) {
 	params := Params{
 		FilePath: "master.xlsx",
 		SheetNum: 2,
-		Columns:  "col1, col2",
 		Table:    "hoge_master",
+		Columns:  "col1, col2",
 	}
 	code, err := Run(params)
 	if code == 0 && err == nil {

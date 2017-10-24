@@ -19,8 +19,8 @@ import (
 type Params struct {
 	FilePath string
 	SheetNum int
-	Columns  string
 	Table    string
+	Columns  string
 }
 
 func main() {
@@ -32,14 +32,14 @@ func main() {
 	params := &Params{}
 
 	// 引数登録
-	flag.StringVar(&params.FilePath, "file", "", "Please Input FilePath")
-	flag.StringVar(&params.FilePath, "f", "", "Please Input FilePath")
-	flag.IntVar(&params.SheetNum, "num", -1, "Please Input Sheet Number( 0 start )")
-	flag.IntVar(&params.SheetNum, "n", -1, "Please Input Sheet Number( 0 start )")
+	flag.StringVar(&params.FilePath, "file", "", "*Required* Please Input FilePath")
+	flag.StringVar(&params.FilePath, "f", "", "*Required* Please Input FilePath")
+	flag.IntVar(&params.SheetNum, "num", -1, "*Required* Please Input Sheet Number( 0 start )")
+	flag.IntVar(&params.SheetNum, "n", -1, "*Required* Please Input Sheet Number( 0 start )")
+	flag.StringVar(&params.Table, "table", "", "*Required* Please Input Table")
+	flag.StringVar(&params.Table, "t", "", "*Required* Please Input Table")
 	flag.StringVar(&params.Columns, "columns", "", "Please Input Columns")
 	flag.StringVar(&params.Columns, "c", "", "Please Input Columns")
-	flag.StringVar(&params.Table, "table", "", "Please Input Table")
-	flag.StringVar(&params.Table, "t", "", "Please Input Table")
 
 	flag.Parse()
 
