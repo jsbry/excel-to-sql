@@ -11,7 +11,13 @@ import (
 )
 
 func Test_NoPath(t *testing.T) {
-	code, err := Run("", 0)
+	params := Params{
+		FilePath: "",
+		SheetNum: 0,
+		Columns:  "",
+		Table:    "",
+	}
+	code, err := Run(params)
 	if code != 0 && err != nil {
 		t.Log(code, err)
 	} else {
@@ -20,7 +26,13 @@ func Test_NoPath(t *testing.T) {
 }
 
 func Test_OkPath(t *testing.T) {
-	code, err := Run("master_file.xlsx", 2)
+	params := Params{
+		FilePath: "master.xlsx",
+		SheetNum: 2,
+		Columns:  "col1, col2",
+		Table:    "hoge_master",
+	}
+	code, err := Run(params)
 	if code == 0 && err == nil {
 		t.Log("OK")
 	} else {
