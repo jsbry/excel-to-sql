@@ -13,6 +13,8 @@ import (
 	"os"
 	"strings"
 
+	"io/ioutil"
+
 	"github.com/tealeg/xlsx"
 )
 
@@ -92,6 +94,7 @@ func Run(params Params) (int, error) {
 		}
 	}
 
+	var content string
 	for _, output := range outputs {
 		head := "INSERT INTO " + params.Table + " ( "
 		if params.Columns != "" {
@@ -100,9 +103,11 @@ func Run(params Params) (int, error) {
 			head += strings.Join(headers, ",")
 		}
 		head += " ) VALUES "
-		output = head + output
-		fmt.Println(output + ";")
+		output = head + output + ";\n"
+		content += output
 	}
+	write_content := []byte(content)
+	ioutil.WriteFile("output.sql", write_content, os.ModePerm)
 
 	return 0, nil
 }
