@@ -85,7 +85,11 @@ func Run(params Params) (int, error) {
 				if r == 0 {
 					headers = append(headers, text)
 				} else {
-					values = append(values, `"`+strings.Replace(text, "\n", "\\n", -1)+`"`)
+					if text == "NULL" {
+						values = append(values, `NULL`)
+					} else {
+						values = append(values, `"`+strings.Replace(text, "\n", "\\n", -1)+`"`)
+					}
 				}
 			}
 			if len(values) != 0 {
