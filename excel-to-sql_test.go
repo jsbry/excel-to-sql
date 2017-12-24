@@ -31,6 +31,7 @@ func Test_OkPath(t *testing.T) {
 		SheetNum: 2,
 		Table:    "hoge_master",
 		Columns:  "col1, col2",
+		Output:   "hoge.sql",
 	}
 	code, err := Run(params)
 	if code == 0 && err == nil {

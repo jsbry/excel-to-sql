@@ -23,6 +23,7 @@ type Params struct {
 	SheetNum int
 	Table    string
 	Columns  string
+	Output   string
 }
 
 func main() {
@@ -42,6 +43,8 @@ func main() {
 	flag.StringVar(&params.Table, "t", "", "*Required* Please Input Table")
 	flag.StringVar(&params.Columns, "columns", "", "Please Input Columns")
 	flag.StringVar(&params.Columns, "c", "", "Please Input Columns")
+	flag.StringVar(&params.Output, "output", "output.sql", "Please Input Output")
+	flag.StringVar(&params.Output, "o", "output.sql", "Please Input Output")
 
 	flag.Parse()
 
@@ -111,7 +114,7 @@ func Run(params Params) (int, error) {
 		content += output
 	}
 	write_content := []byte(content)
-	ioutil.WriteFile("output.sql", write_content, os.ModePerm)
+	ioutil.WriteFile(params.Output, write_content, os.ModePerm)
 
 	return 0, nil
 }
