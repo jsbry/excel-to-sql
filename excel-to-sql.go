@@ -7,23 +7,27 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"flag"
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"io/ioutil"
 
+	"github.com/cheggaaa/pb/v3"
 	"github.com/tealeg/xlsx"
 )
 
 type Params struct {
-	FilePath string
-	SheetNum int
-	Table    string
-	Columns  string
-	Output   string
+	FilePath  string
+	SheetNum  int
+	Table     string
+	Columns   string
+	Output    string
+	Separator int
 }
 
 func main() {
@@ -45,6 +49,8 @@ func main() {
 	flag.StringVar(&params.Columns, "c", "", "Please Input Columns")
 	flag.StringVar(&params.Output, "output", "output.sql", "Please Input Output")
 	flag.StringVar(&params.Output, "o", "output.sql", "Please Input Output")
+	flag.IntVar(&params.Separator, "separator", 1, "Please Input Separator Number")
+	flag.IntVar(&params.Separator, "s", 1, "Please Input Separator Number")
 
 	flag.Parse()
 
@@ -66,6 +72,9 @@ func Run(params Params) (int, error) {
 		return 1, errors.New("Error: Required Table Name")
 	}
 
+	s := time.Now()
+	fmt.Println(s.Format("2006/01/02 15:04:05") + "::start")
+
 	book, err := xlsx.OpenFile(params.FilePath)
 	if err != nil {
 		fmt.Println(err)
@@ -79,9 +88,6 @@ func Run(params Params) (int, error) {
 			continue
 		}
 		for r, row := range sheet.Rows {
-			if r >= 4 {
-				break
-			}
 			var values []string
 			for _, cell := range row.Cells {
 				text := cell.String()
@@ -101,20 +107,45 @@ func Run(params Params) (int, error) {
 		}
 	}
 
-	var content string
-	for _, output := range outputs {
-		head := "INSERT INTO " + params.Table + " ( "
-		if params.Columns != "" {
-			head += params.Columns
-		} else {
-			head += strings.Join(headers, ",")
-		}
-		head += " ) VALUES "
-		output = head + output + ";\n"
-		content += output
+	outputsCount := len(outputs)
+	bar := pb.StartNew(outputsCount)
+	var headBuffer bytes.Buffer
+	var contentBuffer bytes.Buffer
+
+	headBuffer.WriteString("INSERT INTO " + params.Table + " ( ")
+	if params.Columns != "" {
+		headBuffer.WriteString(params.Columns)
+	} else {
+		headBuffer.WriteString(strings.Join(headers, ","))
 	}
-	write_content := []byte(content)
+	headBuffer.WriteString(" ) VALUES ")
+
+	for o, output := range outputs {
+		o++
+		if o%params.Separator == 1 {
+			contentBuffer.Write(headBuffer.Bytes())
+		} else {
+
+		}
+		contentBuffer.WriteString(output)
+		if o%params.Separator == 0 {
+			contentBuffer.WriteString(";\n")
+		} else {
+			if outputsCount != o {
+				contentBuffer.WriteString(",")
+			} else {
+				contentBuffer.WriteString(";\n")
+			}
+		}
+		bar.Increment()
+	}
+
+	write_content := contentBuffer.Bytes()
 	ioutil.WriteFile(params.Output, write_content, os.ModePerm)
+	bar.Finish()
+
+	f := time.Now()
+	fmt.Println(f.Format("2006/01/02 15:04:05") + "::finish")
 
 	return 0, nil
 }
