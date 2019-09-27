@@ -23,6 +23,10 @@ Options
         Please Input Output (default "output.sql")
   -output string
         Please Input Output (default "output.sql")
+  -s int
+        Please Input Separator Number (default 1)
+  -separator int
+        Please Input Separator Number (default 1)
   -t string
         *Required* Please Input Table
   -table string
