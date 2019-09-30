@@ -74,12 +74,15 @@ func Run(params Params) (int, error) {
 
 	s := time.Now()
 	fmt.Println(s.Format("2006/01/02 15:04:05") + "::start")
+	bar := pb.StartNew(4)
 
+	bar.Increment()
 	book, err := xlsx.OpenFile(params.FilePath)
 	if err != nil {
 		fmt.Println(err)
 		return 1, errors.New("Error: Can't Open File")
 	}
+	bar.Increment()
 
 	var headers []string
 	var outputs []string
@@ -106,9 +109,9 @@ func Run(params Params) (int, error) {
 			}
 		}
 	}
+	bar.Increment()
 
 	outputsCount := len(outputs)
-	bar := pb.StartNew(outputsCount)
 	var headBuffer bytes.Buffer
 	var contentBuffer bytes.Buffer
 
@@ -137,8 +140,8 @@ func Run(params Params) (int, error) {
 				contentBuffer.WriteString(";\n")
 			}
 		}
-		bar.Increment()
 	}
+	bar.Increment()
 
 	write_content := contentBuffer.Bytes()
 	ioutil.WriteFile(params.Output, write_content, os.ModePerm)
